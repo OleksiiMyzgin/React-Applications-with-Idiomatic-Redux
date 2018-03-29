@@ -1,34 +1,33 @@
 import { createStore } from 'redux';
 import todoApp from './reducers';
 
-const addLoggingToDispatch = (store) => {
-  const rawDispatch = store.dispatch;
+const logger = (store) => (next) => {
   if (!console.group) {
-    return rawDispatch;
+    return next;
   }
 
   return (action) => {
-    // console.log('addLoggingToDispatch action is ', action);
     console.group(action.type);
     console.log('%c prev state', 'color: grey', store.getState());
     console.log('%c action', 'color: blue', action);
-    const returnValue = rawDispatch(action);
+    const returnValue = next(action);
     console.log('%c next state', 'color: green', store.getState());
     console.groupEnd(action.type);
     return returnValue;
   };
 };
 
-const addPromiseSupportToDispatch = (store) => {
-  const rawDispatch = store.dispatch;
+const promise = (store) => (next) => (action) => {
+  if (typeof action.then === 'function') {
+    return action.then(next);
+  }
+  return next(action);
+};
 
-  return (action) => {
-    // console.log('addPromiseSupportToDispatch action is ', action);
-    if (typeof action.then === 'function') {
-      return action.then(rawDispatch);
-    }
-    return rawDispatch(action);
-  };
+const wrapDispatchWithMiddlewares = (store, middlewares) => {
+  middlewares.slice().reverse().forEach(middleware =>
+    store.dispatch = middleware(store)(store.dispatch)
+  );
 };
 
 const configureStore = () => {
@@ -37,12 +36,13 @@ const configureStore = () => {
     todoApp,
     window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
   /* eslint-enable */
+  const middlewares = [promise];
 
   if (process.env.NODE_ENV !== 'production') {
-    store.dispatch = addLoggingToDispatch(store);
+    middlewares.push(logger);
   }
 
-  store.dispatch = addPromiseSupportToDispatch(store);
+  wrapDispatchWithMiddlewares(store, middlewares);
 
   return store;
 };
