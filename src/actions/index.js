@@ -4,6 +4,7 @@ import * as api from '../api';
 const receiveTodos = (filter, response) => ({
   type: 'RECEIVE_TODOS',
   response,
+  filter,
 });
 
 export const fetchTodos = (filter) =>
