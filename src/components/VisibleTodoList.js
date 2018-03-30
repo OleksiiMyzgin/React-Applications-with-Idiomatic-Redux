@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import PropTypes from 'prop-types';
 import * as actions from '../actions';
-import { getVisibleTodos } from '../reducers';
+import { getVisibleTodos, getIsFetching } from '../reducers';
 import TodoList from './TodoList';
 
 class VisibleTodoList extends Component {
@@ -18,15 +18,19 @@ class VisibleTodoList extends Component {
   }
 
   fetchData() {
-    const { filter, fetchTodos } = this.props;
+    const { filter, fetchTodos, requestTodos } = this.props;
+    requestTodos(filter);
     fetchTodos(filter);
   }
 
   render() {
-    const { toggleTodo, ...rest } = this.props;
+    const { toggleTodo, todos, isFetching } = this.props;
+    if (isFetching && !todos.length) {
+      return <p>Loading...</p>;
+    }
     return (
       <TodoList
-        {...rest}
+        todos={todos}
         onTodoClick={toggleTodo}
       />
     );
@@ -37,12 +41,16 @@ VisibleTodoList.propTypes = {
   filter: PropTypes.string.isRequired,
   toggleTodo: PropTypes.func.isRequired,
   fetchTodos: PropTypes.func.isRequired,
+  requestTodos: PropTypes.func.isRequired,
+  todos: PropTypes.array.isRequired,
+  isFetching: PropTypes.bool.isRequired,
 };
 
 
 const mapStateToProps = (state, { match: { params: { filter } } }) => {
   return {
     todos: getVisibleTodos(state, filter || 'all'),
+    isFetching: getIsFetching(state, filter || 'all'),
     filter: filter || 'all',
   };
 };
