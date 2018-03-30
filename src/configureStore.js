@@ -5,7 +5,7 @@ import todoApp from './reducers';
 const thunk = (store) => (next) => (action) =>
   typeof action === 'function' ?
     action(store.dispatch) :
-    next(action);
+    next(action); // next is Logger
 
 const configureStore = () => {
   const middlewares = [thunk];
