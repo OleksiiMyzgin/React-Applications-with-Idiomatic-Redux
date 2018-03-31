@@ -32,3 +32,6 @@ export const getIsFetching = (state, filter) =>
   fromList.getIsFetching(state.listByFilter[filter]);
 // console.log('getIsFetching state is ', state);
 // console.log('getIsFetching filter is ', filter);
+
+export const getErrorMessage = (state, filter) =>
+  fromList.getErrorMessage(state.listByFilter[filter]);
