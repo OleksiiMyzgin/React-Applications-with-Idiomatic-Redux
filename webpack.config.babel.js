@@ -1,7 +1,7 @@
-import path from 'path';
+const path = require('path');
 
-export default {
-  devtool: 'eval',
+module.exports = {
+  mode: 'development',
   entry: './src/index',
   output: {
     path: path.join(__dirname, 'dist'),
@@ -9,9 +9,9 @@ export default {
     publicPath: '/static/',
   },
   module: {
-    loaders: [{
+    rules: [{
       test: /\.js$/,
-      loaders: ['babel'],
+      use: ['babel-loader'],
       exclude: /node_modules/,
       include: __dirname,
     }],

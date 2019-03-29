@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { addTodo } from '../actions';
 
@@ -8,7 +9,7 @@ const AddTodo = ({ dispatch }) => {
   return (
     <div>
       <form
-        onSubmit={e => {
+        onSubmit={(e) => {
           e.preventDefault();
           if (!input.value.trim()) {
             return;
@@ -17,7 +18,7 @@ const AddTodo = ({ dispatch }) => {
           input.value = '';
         }}
       >
-        <input ref={node => { input = node; }} />
+        <input ref={(node) => { input = node; }} />
         <button type="submit">
           Add Todo
         </button>

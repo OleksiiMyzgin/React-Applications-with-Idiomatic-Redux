@@ -24,7 +24,9 @@ class VisibleTodoList extends Component {
   }
 
   render() {
-    const { toggleTodo, errorMessage, todos, isFetching } = this.props;
+    const {
+      toggleTodo, errorMessage, todos, isFetching,
+    } = this.props;
     if (isFetching && !todos.length) {
       return <p>Loading...</p>;
     }
@@ -57,18 +59,16 @@ VisibleTodoList.propTypes = {
 };
 
 
-const mapStateToProps = (state, { match: { params: { filter } } }) => {
-  return {
-    todos: getVisibleTodos(state, filter || 'all'),
-    errorMessage: getErrorMessage(state, filter || 'all'),
-    isFetching: getIsFetching(state, filter || 'all'),
-    filter: filter || 'all',
-  };
-};
+const mapStateToProps = (state, { match: { params: { filter } } }) => ({
+  todos: getVisibleTodos(state, filter || 'all'),
+  errorMessage: getErrorMessage(state, filter || 'all'),
+  isFetching: getIsFetching(state, filter || 'all'),
+  filter: filter || 'all',
+});
 
 VisibleTodoList = withRouter(connect(
   mapStateToProps,
-  actions
+  actions,
 )(VisibleTodoList));
 
 export default VisibleTodoList;
